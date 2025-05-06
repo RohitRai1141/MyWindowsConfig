@@ -11,7 +11,7 @@
 **Command:**
 
 ```powershell
-git clone https://github.com/MarcusMix/windots.git
+git clone https://github.com/RohitRai1141/MyWindowsConfig.git
 ```
 
 ✅ No error encountered.
