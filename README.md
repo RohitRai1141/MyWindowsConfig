@@ -1,200 +1,222 @@
 
-# 📄 Instalação e Configuração do GlazeWM + PowerToys Run no Windows
-
-## 1. Instalar o GlazeWM
-
-**Usando o winget:**
-
-```powershell
-winget install GlazeWM.GlazeWM
-```
-
-> Este comando baixa e instala o GlazeWM automaticamente.
 
 ---
 
-## 2. Configurar o GlazeWM
-
-### 2.1 Criar a pasta de configuração
-
-O GlazeWM procura o arquivo de configuração em:
-
-```
-C:\Users\SeuUsuário\AppData\Roaming\glazewm\config.yaml
-```
-
-Crie a pasta e o arquivo manualmente:
-
-```powershell
-mkdir C:\Users\SeuUsuário\AppData\Roaming\glazewm
-New-Item -Path C:\Users\SeuUsuário\AppData\Roaming\glazewm\config.yaml
-```
-
-(Substitua `SeuUsuário` pelo seu nome de usuário do Windows.)
-
-### 2.2 Configurar o `config.yaml`
-
-Abra o arquivo para edição:
-
-```powershell
-notepad C:\Users\SeuUsuário\AppData\Roaming\glazewm\config.yaml
-```
-
-Cole a configuração básica abaixo:
-
-```yaml
-mod_key: Alt
-
-bindings:
-  - command: focus-left
-    binding: Alt+H
-  - command: focus-right
-    binding: Alt+L
-  - command: focus-up
-    binding: Alt+K
-  - command: focus-down
-    binding: Alt+J
-  - command: reload-config
-    binding: Alt+Shift+R
-```
-
-### 2.3 Rodar o GlazeWM
-
-Execute no terminal:
-
-```powershell
-glazewm
-```
-
-O GlazeWM iniciará e começará a gerenciar suas janelas.
-
-### 2.4 (Opcional) Rodar o GlazeWM automaticamente com o Windows
-
-- Pressione `Win + R`, digite `shell:startup`, e pressione Enter.
-- Cole um **atalho** para o `glazewm.exe` dentro da pasta de inicialização.
+### ⚙️ **Step-by-Step Configuration Process from `windows configuration.docx`**
 
 ---
 
-## 3. Instalar o PowerToys (para usar o PowerToys Run)
+### Step 1: Clone Windots Repository
 
-**Usando o winget:**
+**Command:**
+
+```powershell
+git clone https://github.com/MarcusMix/windots.git
+```
+
+✅ No error encountered.
+
+---
+
+### Step 2: Navigate into Windots directory
+
+**Command:**
+
+```powershell
+cd windots
+```
+
+✅ No error encountered.
+
+---
+
+### Step 3: Run setup script
+
+**Command:**
+
+```powershell
+.\setup.ps1
+```
+
+❌ **Error:**
+
+```powershell
+.\setup.ps1 : File C:\Users\[user]\windots\setup.ps1 cannot be loaded because running scripts is disabled on this system.
+```
+
+### 👉 Go to Step 4 to fix the error.
+
+---
+
+### Step 4: Enable Script Execution
+
+**Command:**
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+✅ Fixes script execution issue.
+
+---
+
+### Step 5: Re-run the setup script
+
+**Command:**
+
+```powershell
+.\setup.ps1
+```
+
+❌ **Error:**
+
+```powershell
+No match was found for the specified search criteria and module name 'WinGet'. Try Get-PSRepository to see all available registered module repositories.
+```
+
+### 👉 Go to Step 6 to fix the error.
+
+---
+
+### Step 6: Enable TLS 1.2 to fix WinGet/PowerShell errors
+
+**Command:**
+
+```powershell
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+```
+
+✅ Fixes the TLS error that blocks module installation.
+
+---
+
+### Step 7: Re-run the setup again
+
+**Command:**
+
+```powershell
+.\setup.ps1
+```
+
+✅ This time it proceeds without error and begins installing dependencies and symlinking config files.
+
+---
+
+### Step 8: Restart the machine
+
+✅ Restarted as required after the configuration completed.
+
+---
+
+### Step 9: Open GlazeWM and check terminal layout
+
+**Command:**
+
+```powershell
+winfetch
+```
+
+❌ **Error:**
+
+```powershell
+winfetch : The term 'winfetch' is not recognized as the name of a cmdlet...
+```
+
+### 👉 Go to Step 10 to fix winfetch not found issue.
+
+---
+
+### Step 10: Install Winfetch manually
+
+**Command:**
+
+```powershell
+winget install Winfetch
+```
+
+✅ Winfetch installed manually after the setup script failed to handle it.
+
+---
+
+### Step 11: Re-run winfetch
+
+**Command:**
+
+```powershell
+winfetch
+```
+
+✅ Output now shows correctly with system information.
+
+---
+
+### Step 12: Configure fonts manually (due to missing automatic install)
+
+**Steps:**
+
+1. Download font from [Nerd Fonts](https://www.nerdfonts.com/)
+2. Install fonts manually by double-clicking or dragging into Fonts settings
+3. Apply the font in Windows Terminal settings → Profiles → Defaults → Appearance → Font Face
+
+✅ Font now renders correctly in terminal with proper symbols.
+
+---
+
+### Step 13: Fix `config.yaml` path in GlazeWM if not loading
+
+**Steps:**
+
+1. Go to `C:\Users\[username]\AppData\Roaming\glazewm\config.yaml`
+2. Confirm it's symlinked to `windots/config/glazewm/config.yaml`
+3. If broken:
+
+```powershell
+New-Item -ItemType SymbolicLink -Path "C:\Users\[username]\AppData\Roaming\glazewm\config.yaml" -Target "C:\Users\[username]\windots\config\glazewm\config.yaml"
+```
+
+✅ GlazeWM loads the correct config now.
+
+---
+
+### Step 14: Check PowerToys is installed
+
+❌ **Observation:** PowerToys was not installed automatically.
+
+### 👉 Go to Step 15 to install manually.
+
+---
+
+### Step 15: Install PowerToys
+
+**Command:**
 
 ```powershell
 winget install Microsoft.PowerToys
 ```
 
-**Ou manualmente:**
-
-- Acesse [https://learn.microsoft.com/en-us/windows/powertoys/](https://learn.microsoft.com/en-us/windows/powertoys/)
-- Baixe o instalador da versão mais recente via GitHub.
-- Instale normalmente.
+✅ PowerToys installed successfully.
 
 ---
 
-## 4. Usar o PowerToys Run
+### Step 16: Launch PowerToys and enable FancyZones
 
-- Após instalar o PowerToys, abra o app e vá até a seção **PowerToys Run**.
-- Certifique-se de que a funcionalidade está **ativada**.
-- Atalho padrão para abrir o PowerToys Run:
+1. Open PowerToys → FancyZones → Turn on
+2. Set up layout as per preference
 
-  ```
-  Alt + Space
-  ```
-
-  (Você pode mudar o atalho nas configurações se quiser.)
-
-- Agora você pode pesquisar rapidamente por programas, arquivos, pastas e executar comandos.
+✅ FancyZones active and working.
 
 ---
 
-# ✅ Resumo rápido
+### Step 17: Optional – Add PowerToys to Startup (if not auto-starting)
 
-| Item               | Comando Principal                                | Observação                                       |
-|--------------------|--------------------------------------------------|--------------------------------------------------|
-| Instalar GlazeWM    | `winget install GlazeWM.GlazeWM`                 | Gerenciador de janelas estilo Tiling             |
-| Criar config        | `mkdir` + `New-Item` para `config.yaml`           | Configuração manual inicial obrigatória          |
-| Rodar GlazeWM       | `glazewm`                                         | Gerencia janelas ao rodar                        |
-| Instalar PowerToys  | `winget install Microsoft.PowerToys`              | Vem com PowerToys Run e outras ferramentas úteis |
-| Atalho PowerToys Run| `Alt + Space`                                     | Pode ser personalizado                          |
+**Command:**
 
+```powershell
+shell:startup
+```
 
-# Explicação das Teclas de Atalho (Keybinds) no GlazeWM
+Drag a shortcut of PowerToys into that folder.
 
-Aqui estão as teclas de atalho configuradas para o GlazeWM:
+✅ PowerToys now launches on startup.
 
-## Modo de Redimensionamento
-
-Essas teclas permitem redimensionar as janelas.
-
-- **Reduzir a largura da janela em 2%**: `alt+h` ou `alt+esquerda`
-- **Aumentar a largura da janela em 2%**: `alt+l` ou `alt+direita`
-- **Aumentar a altura da janela em 2%**: `alt+k` ou `alt+cima`
-- **Reduzir a altura da janela em 2%**: `alt+j` ou `alt+baixo`
-- **Sair do modo de redimensionamento**: `enter` ou `escape`
-
-## Modo de Pausa
-
-Quando o modo de pausa está ativo, todas as teclas de atalho são desativadas, exceto a tecla para desativar o modo de pausa.
-
-- **Ativar/desativar modo de pausa**: `alt+shift+p`
-
-## Mudança de Foco (Foco de Janela)
-
-Essas teclas permitem mover o foco para outra janela.
-
-- **Focar na janela à esquerda**: `alt+h` ou `alt+esquerda`
-- **Focar na janela à direita**: `alt+l` ou `alt+direita`
-- **Focar na janela acima**: `alt+k` ou `alt+cima`
-- **Focar na janela abaixo**: `alt+j` ou `alt+baixo`
-
-## Mover Janela
-
-Essas teclas permitem mover a janela focada em uma direção.
-
-- **Mover janela à esquerda**: `alt+shift+h` ou `alt+shift+esquerda`
-- **Mover janela à direita**: `alt+shift+l` ou `alt+shift+direita`
-- **Mover janela acima**: `alt+shift+k` ou `alt+shift+cima`
-- **Mover janela abaixo**: `alt+shift+j` ou `alt+shift+baixo`
-
-## Redimensionar Janela (Modo de Redimensionamento)
-
-No modo de redimensionamento, você pode redimensionar as janelas usando as teclas de seta ou HJKL.
-
-- **Ativar modo de redimensionamento**: `alt+r`
-
-## Tiling e Modo de Exibição
-
-Essas teclas permitem alternar entre diferentes modos de exibição e controlar o comportamento das janelas.
-
-- **Alternar entre o modo de tiling e o modo flutuante**: `alt+t`
-- **Alternar para o modo fullscreen (tela cheia)**: `alt+f`
-- **Minimizar a janela focada**: `alt+m`
-- **Fechar a janela focada**: `alt+shift+q`
-- **Sair do GlazeWM**: `alt+shift+e`
-- **Recarregar a configuração do GlazeWM**: `alt+shift+r`
-- **Redesenhar todas as janelas**: `alt+enter`
-
-## Focar em Workspaces
-
-Essas teclas permitem navegar entre os workspaces configurados.
-
-- **Focar no próximo workspace**: `alt+s`
-- **Focar no workspace anterior**: `alt+a`
-- **Focar no workspace mais recente**: `alt+d`
-- **Focar nos workspaces numerados (1 a 9)**:
-  - `alt+1` a `alt+9`
-
-## Mover Janela entre Workspaces
-
-Essas teclas permitem mover a janela atual para outro workspace.
-
-- **Mover a janela para o workspace 1-9 e focar nele**: `alt+shift+1` a `alt+shift+9`
-- **Mover a janela para o workspace à esquerda/direita/acima/abaixo**: `alt+shift+a` (esquerda), `alt+shift+f` (direita), `alt+shift+d` (cima), `alt+shift+s` (baixo)
-
-## Abrir Terminais
-
-Essas teclas permitem abrir terminais diretamente.
-
-- **Abrir o terminal PowerShell**: `alt+enter`
-- **Abrir o terminal CMD**: `alt+enter`
-"""
+---
